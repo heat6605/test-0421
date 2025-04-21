@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -42,10 +41,14 @@
     <h3>4. 選擇配色</h3>
     <div id="colors"></div>
   </section>
-  <section id="step5">
-    <h3>5. 填寫訂購表單</h3>
-    <button onclick="goToRagic()">前往 Ragic 表單</button>
-  </section>
+  <section id="step1_2">
+  <h3>2-2. 選擇球褲版型</h3>
+  <div id="pants"></div>
+</section>
+<section id="step5">
+  <h3>5. 填寫訂購表單</h3>
+  <button onclick="goToRagic()">前往 Ragic 表單</button>
+</section>
 
   <script>
     const data = {
@@ -86,7 +89,7 @@
       }
     };
 
-    let selections = { sport: "", layout: "", item: "", style: "", color: "" };
+    let selections = { sport: "", layout: "", item: "", pants: "", style: "", color: "" };
 
     function createOption(imgSrc, label, callback) {
       const div = document.createElement('div');
@@ -114,42 +117,46 @@
         const imgSrc = `images/${sport}.jpg`;
         const opt = createOption(imgSrc, sport, () => {
           selections.sport = sport;
-          showItems(sport);
+          if (data[sport].layouts) {
+            showLayouts(sport);
+          } else {
+            showItems(sport);
+          }
         });
         sportDiv.appendChild(opt);
       });
     }
 
     function showLayouts(sport) {
-      const layoutDiv = document.getElementById('layouts');
-      layoutDiv.innerHTML = '';
-      data[sport].layouts.forEach(layout => {
-        const imgSrc = `images/${sport}/${layout}.jpg`;
-        const opt = createOption(imgSrc, layout, () => {
-          selections.layout = layout;
-          showStyles(sport);
-        });
-        layoutDiv.appendChild(opt);
-      });
-      showStep('step1_1');
+  const layoutDiv = document.getElementById('layouts');
+  layoutDiv.innerHTML = '';
+  data[sport].layouts.forEach(layout => {
+    const imgSrc = `images/${sport}/${layout}.jpg`;
+    const opt = createOption(imgSrc, layout, () => {
+      selections.layout = layout;
+      showPants();
+    });
+    layoutDiv.appendChild(opt);
+  });
+  showStep('step1_1');
     }
 
     function showItems(sport) {
-      const itemDiv = document.getElementById('items');
-      itemDiv.innerHTML = '';
-      data[sport].items.forEach(item => {
-        const imgSrc = `images/${sport}/${item}.jpg`;
-        const opt = createOption(imgSrc, item, () => {
-          selections.item = item;
-          if (selections.sport === '籃球') {
-            showLayouts(sport);
-          } else {
-            showStyles(sport);
-          }
-        });
-        itemDiv.appendChild(opt);
-      });
-      showStep('step2');
+  const itemDiv = document.getElementById('items');
+  itemDiv.innerHTML = '';
+  data[sport].items.forEach(item => {
+    const imgSrc = `images/${sport}/${item}.jpg`;
+    const opt = createOption(imgSrc, item, () => {
+      selections.item = item;
+      if (selections.sport === '籃球') {
+        showLayouts(sport);
+      } else {
+        showStyles(sport);
+      }
+    });
+    itemDiv.appendChild(opt);
+  });
+  showStep('step2');
     }
 
     function showStyles(sport) {
@@ -171,34 +178,51 @@
     }
 
     function showColors(sport, style) {
-      const colorDiv = document.getElementById('colors');
-      colorDiv.innerHTML = '';
-      const colors = data[sport].styles[style];
-      colors.forEach(color => {
-        const imgSrc = `images/${sport}/${style}-${color}.jpg`;
-        const label = `${style}-${color}`;
-        const opt = createOption(imgSrc, label, () => {
-          selections.color = `${style}-${color}`;
-          showStep('step5');
-        });
-        colorDiv.appendChild(opt);
-      });
-      showStep('step4');
+  const colorDiv = document.getElementById('colors');
+  colorDiv.innerHTML = '';
+  const colors = data[sport].styles[style];
+  colors.forEach(color => {
+    const imgSrc = `images/${sport}/${style}-${color}.jpg`;
+    const label = `${style}-${color}`;
+    const opt = createOption(imgSrc, label, () => {
+      selections.color = `${style}-${color}`;
+      showPants();
+    });
+    colorDiv.appendChild(opt);
+  });
+  showStep('step4');
     }
 
-    function goToRagic() {
-      const base = "https://ap9.ragic.com/jersey/forms6/16";
-      const params = new URLSearchParams({
-        webview: "",
-        webaction: "form",
-        ver: "new",
-        version: "2",
-        pfv1001193: selections.sport,
-        pfv1000069: selections.item,
-        pfv1002088: "短版球褲",
-        pfv1000071: selections.style,
-        pfv1001153: selections.color
-      });
+    function showPants() {
+  const pantsDiv = document.getElementById('pants');
+  pantsDiv.innerHTML = '';
+  ["經典球褲", "短版球褲"].forEach(pants => {
+    const imgSrc = `images/褲型/${pants}.jpg`;
+    const opt = createOption(imgSrc, pants, () => {
+      selections.pants = pants;
+      showStyles(selections.sport);
+    });
+    pantsDiv.appendChild(opt);
+  });
+  showStep('step1_2');
+}
+
+function goToRagic() {
+  const base = "https://ap9.ragic.com/jersey/forms6/16";
+  const params = new URLSearchParams({
+    webview: "",
+    webaction: "form",
+    ver: "new",
+    version: "2",
+    pfv1001193: selections.sport,
+    pfv1000069: selections.item,
+    pfv1002088: selections.pants,
+    pfv1000071: selections.style,
+    pfv1001153: selections.color
+  });
+  const url = `${base}?${params.toString()}`;
+  window.open(url, '_blank');
+});
       const url = `${base}?${params.toString()}`;
       window.open(url, '_blank');
     }
