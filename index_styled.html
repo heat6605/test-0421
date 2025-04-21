@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>SGB 款式挑選</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      background-image: url('images/bg.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3); /* 黑色遮罩，70% 透明 */
+      z-index: -1;
+    }
+
+    section { display: none; margin-top: 20px; }
+    .active { display: block; }
+    .option { display: inline-block; margin: 10px; }
+    .option-img {
+      width: 240px;
+      height: 240px;
+      object-fit: cover;
+      border: 2px solid transparent;
+      transition: border 0.3s;
+    }
+    .option-img:hover { border: 2px solid #007bff; }
+    .label {
+      margin-top: 6px;
+      font-size: 14px;
+      font-family: 'Noto Sans TC', sans-serif;
+      color: #fff;
+    }
+    .back-btn {
+      margin: 10px auto;
+      display: block;
+      padding: 6px 20px;
+      font-size: 16px;
+      border: 1px solid #d33;
+      border-radius: 4px;
+      background-color: #fff;
+      color: #d33;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+    }
+    h2, h3 {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h2>SGB 款式挑選</h2>
+  <section class="active" id="step1">
+    <h3>1. 選擇運動類型</h3>
+    <div id="sports"></div>
+  </section>
+  <section id="step2">
+    <h3>2. 選擇品項</h3>
+    <button class="back-btn" onclick="showStep('step1')">← 上一步</button>
+    <div id="items"></div>
+  </section>
+</body>
+</html>
