@@ -58,7 +58,27 @@
   </section>
 
   <script>
-    const data = {
+    
+<script>
+const imageLabelMap = {
+  "籃球": "Basketball",
+  "排球": "Volleyball",
+  "羽球": "Badminton",
+  "雙面球衣+單面球褲": "Reversible Jersey + Shorts",
+  "單面球衣*2+單面球褲": "2 Jerseys + Shorts",
+  "單面球衣*2+單面球褲*2": "2 Jerseys + 2 Shorts",
+  "拉克蘭袖": "Raglan Sleeve",
+  "SGB短袖": "SGB Sleeve",
+  "練習衣": "Practice Jersey",
+  "經典球褲": "Classic Shorts",
+  "短版球褲": "Short Shorts",
+  "排羽球上衣": "Top Only",
+  "排羽球上衣+SGB染色排球褲": "Top + Shorts",
+  "練習衣-口個": "Practice Only",
+  "練習衣+SGB染色排球褲": "Practice + Shorts"
+};
+
+const data = {
   "籃球": {
     items: {
       "雙面球衣+單面球褲": ["雙面圓領"],
@@ -151,25 +171,6 @@
       T01: ["白", "淺灰", "深灰", "黑", "芥末黃", "南瓜橘", "螢光黃", "嫩黃綠", "嫩綠", "30紅", "紅", "酒紅", "天空藍", "淺紫", "深紫", "深藍", "寶藍", "丈青", "藍綠", "草綠", "墨綠", "卡其"]
     }
   }
-};
-
-<script>
-const imageLabelMap = {
-  "籃球": "Basketball",
-  "排球": "Volleyball",
-  "羽球": "Badminton",
-  "雙面球衣+單面球褲": "Reversible Jersey + Shorts",
-  "單面球衣*2+單面球褲": "2 Jerseys + Shorts",
-  "單面球衣*2+單面球褲*2": "2 Jerseys + 2 Shorts",
-  "拉克蘭袖": "Raglan Sleeve",
-  "SGB短袖": "SGB Sleeve",
-  "練習衣": "Practice Jersey",
-  "經典球褲": "Classic Shorts",
-  "短版球褲": "Short Shorts",
-  "排羽球上衣": "Top Only",
-  "排羽球上衣+SGB染色排球褲": "Top + Shorts",
-  "練習衣-口個": "Practice Only",
-  "練習衣+SGB染色排球褲": "Practice + Shorts"
 };
 
 let selections = { sport: "", item: "", jerseyType: "", shortsType: "", style: "", color: "" };
