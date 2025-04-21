@@ -17,6 +17,7 @@
     }
     .option-img:hover { border: 2px solid #007bff; }
     .label { margin-top: 6px; font-size: 14px; }
+    .back-btn { margin-top: 10px; display: block; }
   </style>
 </head>
 <body>
@@ -30,31 +31,37 @@
   <section id="step2">
     <h3>2. 選擇品項</h3>
     <div id="items"></div>
+    <button class="back-btn" onclick="showStep('step1')">← 上一步</button>
   </section>
 
   <section id="step3">
     <h3>3. 選擇球衣版型</h3>
     <div id="jerseyTypes"></div>
+    <button class="back-btn" onclick="showStep('step2')">← 上一步</button>
   </section>
 
   <section id="step4">
     <h3>4. 選擇球褲版型</h3>
     <div id="shortsTypes"></div>
+    <button class="back-btn" onclick="showStep('step3')">← 上一步</button>
   </section>
 
   <section id="step5">
     <h3>5. 選擇款式</h3>
     <div id="styles"></div>
+    <button class="back-btn" onclick="showStep('step4')">← 上一步</button>
   </section>
 
   <section id="step6">
     <h3>6. 選擇配色</h3>
     <div id="colors"></div>
+    <button class="back-btn" onclick="showStep('step5')">← 上一步</button>
   </section>
 
   <section id="step7">
     <h3>7. 填寫訂購表單</h3>
     <button onclick="goToRagic()">前往 Ragic 表單</button>
+    <button class="back-btn" onclick="showStep('step6')">← 上一步</button>
   </section>
 
   <script>
@@ -76,129 +83,37 @@
           S42: ["SV","BK","PP","CB","DR","GL"],
           S43: ["BK","PP","DE","CR","AY","GL"],
           S44: ["DNB","DNS","DNG","DNK"]
-          // 其他款式省略，可補齊
         }
+      },
+      "排球": {
+        items: {
+          "排羽球上衣": ["拉克蘭袖", "SGB袖"],
+          "排羽球上衣+SGB染色排球褲": ["拉克蘭袖", "SGB袖"],
+          "練習衣-口個": ["練習衣"],
+          "練習衣+SGB染色排球褲": ["練習衣"]
+        },
+        styles: {
+          "拉克蘭袖": ["V51","V52","V53","V54","V41","V42","V43","V44","V45","V46","V47","V48","V49"],
+          "SGB袖": ["V31","V32"],
+          "練習衣": ["白", "淺灰", "深灰", "黑", "芥末黃", "南瓜橘", "螢光黃", "嫩黃綠", "嫩綠", "30紅", "紅", "酒紅", "天空藍", "淺紫", "深紫", "深藍", "寶藍", "丈青", "藍綠", "草綠", "墨綠", "卡其"]
+        },
+        colors: {}
+      },
+      "羽球": {
+        items: {
+          "排羽球上衣": ["拉克蘭袖", "SGB袖"],
+          "排羽球上衣+SGB染色排球褲": ["拉克蘭袖", "SGB袖"],
+          "練習衣-口個": ["練習衣"],
+          "練習衣+SGB染色排球褲": ["練習衣"]
+        },
+        styles: {
+          "拉克蘭袖": ["V51","V52"],
+          "SGB袖": ["B21","B11","B12","B13"],
+          "練習衣": ["白", "淺灰", "深灰", "黑", "芥末黃", "南瓜橘", "螢光黃", "嫩黃綠", "嫩綠", "30紅", "紅", "酒紅", "天空藍", "淺紫", "深紫", "深藍", "寶藍", "丈青", "藍綠", "草綠", "墨綠", "卡其"]
+        },
+        colors: {}
       }
-      // 排球與羽球略
     };
-
-    let selections = { sport: "", item: "", jerseyType: "", shortsType: "", style: "", color: "" };
-
-    function createOption(imgSrc, label, callback) {
-      const div = document.createElement('div');
-      div.className = 'option';
-      const img = document.createElement('img');
-      img.src = imgSrc;
-      img.className = 'option-img';
-      img.onerror = () => img.src = 'images/default.jpg';
-      img.onclick = callback;
-      const lbl = document.createElement('div');
-      lbl.className = 'label';
-      lbl.textContent = label;
-      div.appendChild(img);
-      div.appendChild(lbl);
-      return div;
-    }
-
-    function showStep(stepId) {
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      document.getElementById(stepId).classList.add('active');
-    }
-
-    function init() {
-      const sportDiv = document.getElementById('sports');
-      Object.keys(data).forEach(sport => {
-        const opt = createOption(`images/${sport}.jpg`, sport, () => {
-          selections.sport = sport;
-          showItems(sport);
-        });
-        sportDiv.appendChild(opt);
-      });
-    }
-
-    function showItems(sport) {
-      const itemDiv = document.getElementById('items');
-      itemDiv.innerHTML = '';
-      Object.keys(data[sport].items).forEach(item => {
-        const opt = createOption(`images/${sport}/${item}.jpg`, item, () => {
-          selections.item = item;
-          showJerseyTypes(sport, item);
-        });
-        itemDiv.appendChild(opt);
-      });
-      showStep('step2');
-    }
-
-    function showJerseyTypes(sport, item) {
-      const typeDiv = document.getElementById('jerseyTypes');
-      typeDiv.innerHTML = '';
-      data[sport].items[item].forEach(type => {
-        const opt = createOption(`images/${sport}/${type}.jpg`, type, () => {
-          selections.jerseyType = type;
-          showShortsTypes(sport);
-        });
-        typeDiv.appendChild(opt);
-      });
-      showStep('step3');
-    }
-
-    function showShortsTypes(sport) {
-      const shortsDiv = document.getElementById('shortsTypes');
-      shortsDiv.innerHTML = '';
-      data[sport].shorts.forEach(type => {
-        const opt = createOption(`images/${sport}/${type}.jpg`, type, () => {
-          selections.shortsType = type;
-          showStyles(sport, selections.jerseyType);
-        });
-        shortsDiv.appendChild(opt);
-      });
-      showStep('step4');
-    }
-
-    function showStyles(sport, jerseyType) {
-      const styleDiv = document.getElementById('styles');
-      styleDiv.innerHTML = '';
-      data[sport].styles[jerseyType].forEach(style => {
-        const opt = createOption(`images/${sport}/${style}.jpg`, style, () => {
-          selections.style = style;
-          showColors(sport, style);
-        });
-        styleDiv.appendChild(opt);
-      });
-      showStep('step5');
-    }
-
-    function showColors(sport, style) {
-      const colorDiv = document.getElementById('colors');
-      colorDiv.innerHTML = '';
-      (data[sport].colors[style] || []).forEach(color => {
-        const label = `${style}-${color}`;
-        const opt = createOption(`images/${sport}/${label}.jpg`, label, () => {
-          selections.color = label;
-          showStep('step7');
-        });
-        colorDiv.appendChild(opt);
-      });
-      showStep('step6');
-    }
-
-    function goToRagic() {
-      const base = "https://ap9.ragic.com/jersey/forms6/16";
-      const params = new URLSearchParams({
-        webview: "",
-        webaction: "form",
-        ver: "new",
-        version: "2",
-        pfv1001193: selections.sport,
-        pfv1000069: selections.item,
-        pfv1002088: selections.shortsType,
-        pfv1000071: selections.style,
-        pfv1001153: selections.color
-      });
-      window.open(`${base}?${params.toString()}`, '_blank');
-    }
-
-    init();
   </script>
 </body>
 </html>
