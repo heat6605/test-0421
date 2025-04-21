@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>Jersey 圖片選單</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    section { display: none; margin-top: 20px; }
+    .active { display: block; }
+    .option { display: inline-block; margin: 10px; }
+    .option-img {
+      width: 240px;
+      height: 240px;
+      object-fit: cover;
+      border: 2px solid transparent;
+      transition: border 0.3s;
+    }
+    .option-img:hover { border: 2px solid #007bff; }
+    .label { margin-top: 6px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h2>Jersey 圖片選單</h2>
+  <section id="step1" class="active">
+    <h3>1. 選擇運動類型</h3>
+    <div id="sports"></div>
+  </section>
+  <section id="step1_1">
+  <h3>2-1. 選擇版型</h3>
+  <div id="layouts"></div>
+</section>
+  <section id="step2">
+    <h3>2. 選擇品項</h3>
+    <div id="items"></div>
+  </section>
+  <section id="step3">
+    <h3>3. 選擇漿式</h3>
+    <div id="styles"></div>
+  </section>
+  <section id="step4">
+    <h3>4. 選擇配色</h3>
+    <div id="colors"></div>
+  </section>
+  <section id="step5">
+    <h3>5. 填寫訂購表單</h3>
+    <button onclick="goToRagic()">前往 Ragic 表單</button>
+  </section>
+
+  <script>
+    const data = {
+      "籃球": {
+        layouts: ["雙面圓領", "單面V領", "單面圓領"],
+        layoutStyles: {
+          "雙面圓領": ["S41", "S42", "S43", "S44", "S31", "S32", "S21", "S23", "S24", "S10", "S11", "S12", "S13", "S01", "S03", "S07", "S08", "S09"],
+          "單面V領": ["S41", "S42", "S43", "S44"],
+          "單面圓領": ["S31", "S32", "S21", "S23", "S24", "S10", "S11", "S12", "S13", "S01", "S03", "S07", "S08", "S09"]
+        },
+        items: ["雙面球衣+單面球褲", "單面球衣*2+單面球褲", "單面球衣*2+單面球褲*2"],
+        styles: {
+          S41: ["KB", "BK"],
+          S42: ["SV", "BK"],
+          S43: ["BK"],
+          S44: ["DNB"],
+          S31: ["SB"],
+          S32: ["BK"],
+          S21: ["GR"],
+          S23: ["WR"],
+          S24: ["NW"],
+          S10: ["BK"],
+          S11: ["AY"],
+          S12: ["BK"],
+          S13: ["BK"],
+          S01: ["BK"],
+          S03: ["AW"],
+          S07: ["AW"],
+          S08: ["GB"],
+          S09: ["BK"]
+        }
+      },
+      "排球": {
+        items: ["排球上衣", "排球上衣+排球褲"],
+        styles: {
+          V41: ["BK"]
+        }
+      }
+    };
+
+    let selections = { sport: "", layout: "", item: "", style: "", color: "" };
+
+    function createOption(imgSrc, label, callback) {
+      const div = document.createElement('div');
+      div.className = 'option';
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.className = 'option-img';
+      img.onclick = callback;
+      const lbl = document.createElement('div');
+      lbl.className = 'label';
+      lbl.textContent = label;
+      div.appendChild(img);
+      div.appendChild(lbl);
+      return div;
+    }
+
+    function showStep(step) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+      document.getElementById(step).classList.add('active');
+    }
+
+    function init() {
+      const sportDiv = document.getElementById('sports');
+      Object.keys(data).forEach(sport => {
+        const imgSrc = `images/${sport}.jpg`;
+        const opt = createOption(imgSrc, sport, () => {
+          selections.sport = sport;
+          showItems(sport);
+        });
+        sportDiv.appendChild(opt);
+      });
+    }
+
+    function showLayouts(sport) {
+      const layoutDiv = document.getElementById('layouts');
+      layoutDiv.innerHTML = '';
+      data[sport].layouts.forEach(layout => {
+        const imgSrc = `images/${sport}/${layout}.jpg`;
+        const opt = createOption(imgSrc, layout, () => {
+          selections.layout = layout;
+          showStyles(sport);
+        });
+        layoutDiv.appendChild(opt);
+      });
+      showStep('step1_1');
+    }
+
+    function showItems(sport) {
+      const itemDiv = document.getElementById('items');
+      itemDiv.innerHTML = '';
+      data[sport].items.forEach(item => {
+        const imgSrc = `images/${sport}/${item}.jpg`;
+        const opt = createOption(imgSrc, item, () => {
+          selections.item = item;
+          if (selections.sport === '籃球') {
+            showLayouts(sport);
+          } else {
+            showStyles(sport);
+          }
+        });
+        itemDiv.appendChild(opt);
+      });
+      showStep('step2');
+    }
+
+    function showStyles(sport) {
+      const styleDiv = document.getElementById('styles');
+      styleDiv.innerHTML = '';
+      const styles = data[sport].styles;
+      const filterStyles = selections.layout && data[sport].layoutStyles ? data[sport].layoutStyles[selections.layout] : Object.keys(styles);
+      filterStyles.forEach(style => {
+        if (styles[style]) {
+          const imgSrc = `images/${sport}/${style}.jpg`;
+          const opt = createOption(imgSrc, style, () => {
+            selections.style = style;
+            showColors(sport, style);
+          });
+          styleDiv.appendChild(opt);
+        }
+      });
+      showStep('step3');
+    }
+
+    function showColors(sport, style) {
+      const colorDiv = document.getElementById('colors');
+      colorDiv.innerHTML = '';
+      const colors = data[sport].styles[style];
+      colors.forEach(color => {
+        const imgSrc = `images/${sport}/${style}-${color}.jpg`;
+        const label = `${style}-${color}`;
+        const opt = createOption(imgSrc, label, () => {
+          selections.color = `${style}-${color}`;
+          showStep('step5');
+        });
+        colorDiv.appendChild(opt);
+      });
+      showStep('step4');
+    }
+
+    function goToRagic() {
+      const base = "https://ap9.ragic.com/jersey/forms6/16";
+      const params = new URLSearchParams({
+        webview: "",
+        webaction: "form",
+        ver: "new",
+        version: "2",
+        pfv1001193: selections.sport,
+        pfv1000069: selections.item,
+        pfv1002088: "短版球褲",
+        pfv1000071: selections.style,
+        pfv1001153: selections.color
+      });
+      const url = `${base}?${params.toString()}`;
+      window.open(url, '_blank');
+    }
+
+    init();
+  </script>
+</body>
+</html>
