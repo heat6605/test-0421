@@ -1,251 +1,187 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>Jersey 圖片選單</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; }
-    section { display: none; margin-top: 20px; }
-    .active { display: block; }
-    .option { display: inline-block; margin: 10px; }
-    .option-img {
-      width: 240px;
-      height: 240px;
-      object-fit: cover;
-      border: 2px solid transparent;
-      transition: border 0.3s;
-    }
-    .option-img:hover { border: 2px solid #007bff; }
-    .label { margin-top: 6px; font-size: 14px; }
-    .back-btn { margin-top: 10px; display: block; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>報名開始 | DV LEOPARD CHALLENGE 2026 競技健身挑戰賽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        
+        :root {
+            --leopard: #cfff04;
+        }
+
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #050505; 
+            color: #fff; 
+            scroll-behavior: smooth; 
+            overflow-x: hidden;
+        }
+
+        .oswald { font-family: 'Oswald', sans-serif; }
+        
+        .neon-border { 
+            border: 1px solid var(--leopard); 
+            box-shadow: 0 0 15px rgba(207, 255, 4, 0.15); 
+        }
+
+        .bg-leopard { background-color: var(--leopard); }
+        .text-leopard { color: var(--leopard); }
+        .border-leopard { border-color: var(--leopard); }
+        
+        .btn-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-hover:hover { 
+            background-color: #fff; 
+            color: #000; 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(207, 255, 4, 0.3);
+        }
+
+        .card-blur { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card-blur:hover {
+            border-color: rgba(207, 255, 4, 0.5);
+            transform: translateY(-5px);
+        }
+
+        /* 自定義捲軸 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--leopard); }
+    </style>
 </head>
 <body>
-  <h2>Jersey 圖片選單</h2>
 
-  <section id="step1" class="active">
-  <h3>1. 選擇運動類型</h3>
-  <div id="sports"></div>
-</section>
-<section id="step2">
-  <h3>2. 選擇品項</h3>
-  <div id="items"></div>
-  <button class="back-btn" onclick="showStep('step1')">← 上一步</button>
-</section>
-<section id="step3">
-  <h3>3. 選擇球衣版型</h3>
-  <div id="jerseyTypes"></div>
-  <button class="back-btn" onclick="showStep('step2')">← 上一步</button>
-</section>
-<section id="step4">
-  <h3>4. 選擇球褲版型</h3>
-  <div id="shortsTypes"></div>
-  <button class="back-btn" onclick="showStep('step3')">← 上一步</button>
-</section>
-<section id="step5">
-  <h3>5. 選擇款式</h3>
-  <div id="styles"></div>
-  <button class="back-btn" onclick="showStep('step4')">← 上一步</button>
-</section>
-<section id="step6">
-  <h3>6. 選擇配色</h3>
-  <div id="colors"></div>
-  <button class="back-btn" onclick="showStep('step5')">← 上一步</button>
-</section>
-<section id="step7">
-  <h3>7. 填寫訂購表單</h3>
-  <button onclick="goToRagic()">前往 Ragic 表單</button>
-  <button class="back-btn" onclick="showStep('step6')">← 上一步</button>
-</section>
+    <!-- 導航欄 -->
+    <nav class="fixed w-full z-50 bg-black/80 backdrop-blur-lg border-b border-white/5 px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-black oswald tracking-tighter italic">
+            DV LEOPARD <span class="text-leopard">CHALLENGE</span>
+        </div>
+        <div class="hidden md:flex gap-8 text-xs font-bold tracking-[0.2em] uppercase">
+            <a href="#about" class="hover:text-leopard transition-colors">賽事介紹</a>
+            <a href="#modules" class="hover:text-leopard transition-colors">競技模塊</a>
+            <a href="#prize" class="hover:text-leopard transition-colors">參賽方案</a>
+            <a href="#schedule" class="hover:text-leopard transition-colors">賽程時間</a>
+        </div>
+        <a href="#register-form" class="bg-leopard text-black px-6 py-2 rounded-full font-black text-xs btn-hover uppercase tracking-wider">
+            立即報名
+        </a>
+    </nav>
 
-  <script>
-    const data = {
-      "籃球": {
-        items: {
-          "雙面球衣+單面球褲": ["雙面圓領"],
-          "單面球衣*2+單面球褲": ["單面圓領", "單面V領"],
-          "單面球衣*2+單面球褲*2": ["單面圓領", "單面V領"]
-        },
-        shorts: ["經典球褲", "短版球褲"],
-        styles: {
-          雙面圓領: ["S31","S32","S21","S23","S24","S10","S11","S12","S13","S01","S03","S07","S08","S09","S51","S52","S53","S54","S41","S42","S43","S44"],
-          單面圓領: ["S31","S32","S21","S23","S24","S10","S11","S12","S13","S01","S03","S07","S08","S09"],
-          單面V領: ["S51","S52","S53","S54","S41","S42","S43","S44"]
-        },
-        colors: {
-          V41: ["WB", "BK", "MB", "PP", "LB", "MG", "PW", "LV", "GL", "DR"],
-          V42: ["NB", "PW", "PP", "BO", "BK"],
-          V43: ["FG", "BK", "GB", "PB", "AW"],
-          V44: ["AW", "BK", "TB", "QP", "SW", "DR"],
-          V45: ["LB", "OR", "QP", "AW", "RB"],
-          V46: ["NB", "QP", "PP", "MT", "AW", "RB"],
-          V31: ["AW", "WG", "UN", "TCG", "WBI", "PB", "QP"],
-          V32: ["QP", "DW", "UN", "FG", "KG", "FP"],
-          V47: ["TB", "BW", "OY", "WR", "LG"],
-          V48: ["BK", "AW", "YY", "WR", "TPB"],
-          V49: ["BK", "OY", "WBI", "WR", "TCG"],
-          V51: ["NB", "PW", "PP", "BO", "BK"],
-          V52: ["NB", "PW", "PP", "BO", "BK"],
-          V53: ["NB", "PW", "PP", "BO", "BK"],
-          V54: ["NB", "PW", "PP", "BO", "BK"]
-        }
-      },
-      "排球": {
-        items: {
-          "排羽球上衣": ["拉克蘭袖", "SGB袖"],
-          "排羽球上衣+SGB染色排球褲": ["拉克蘭袖", "SGB袖"],
-          "練習衣-口個": ["練習衣"],
-          "練習衣+SGB染色排球褲": ["練習衣"]
-        },
-        styles: {
-          "拉克蘭袖": ["V51","V52","V53","V54","V41","V42","V43","V44","V45","V46","V47","V48","V49"],
-          "SGB袖": ["V31","V32"],
-          "練習衣": ["白", "淺灰", "深灰", "黑", "芥末黃", "南瓜橘", "螢光黃", "嫩黃綠", "嫩綠", "30紅", "紅", "酒紅", "天空藍", "淺紫", "深紫", "深藍", "寶藍", "丈青", "藍綠", "草綠", "墨綠", "卡其"]
-        },
-        colors: {
-          B21: ["NB", "CB", "PB", "BO", "BK"],
-          B11: ["BK", "KC", "KB", "WR", "BO"],
-          B12: ["GB", "CB", "NTY", "GA", "JG"],
-          B13: ["BK", "GB", "NTY", "AW", "GA"],
-          B51: ["NB", "CB", "PB", "BO", "BK"],
-          B52: ["NB", "CB", "PB", "BO", "BK"]
-        }
-      },
-      "羽球": {
-        items: {
-          "排羽球上衣": ["拉克蘭袖", "SGB袖"],
-          "排羽球上衣+SGB染色排球褲": ["拉克蘭袖", "SGB袖"],
-          "練習衣-口個": ["練習衣"],
-          "練習衣+SGB染色排球褲": ["練習衣"]
-        },
-        styles: {
-          "拉克蘭袖": ["V51","V52"],
-          "SGB袖": ["B21","B11","B12","B13"],
-          "練習衣": ["白", "淺灰", "深灰", "黑", "芥末黃", "南瓜橘", "螢光黃", "嫩黃綠", "嫩綠", "30紅", "紅", "酒紅", "天空藍", "淺紫", "深紫", "深藍", "寶藍", "丈青", "藍綠", "草綠", "墨綠", "卡其"]
-        },
-        colors: {}
-      }
-    };
-      let selections = { sport: "", item: "", jerseyType: "", shortsType: "", style: "", color: "" };
+    <!-- 英雄視覺區 -->
+    <header class="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=2070" 
+                 class="w-full h-full object-cover opacity-40 scale-105" alt="Athlete Training">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/20 to-black"></div>
+        </div>
+        
+        <div class="relative z-10 animate__animated animate__fadeIn">
+            
+            </span>
+            <h1 class="text-7xl md:text-[10rem] font-black mb-4 oswald uppercase italic leading-[0.85] tracking-tighter">
+                DV LEOPARD <br><span class="text-leopard">CHALLENGE</span>
+            </h1>
+            <p class="text-lg md:text-2xl font-medium tracking-[0.4em] mb-12 text-gray-400 uppercase">
+                 競技健身挑戰賽
+            </p>
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                <a href="#register-form" class="bg-leopard text-black px-12 py-5 rounded-full font-black text-xl btn-hover shadow-2xl shadow-leopard/20">
+                    開始報名
+                </a>
+                <div class="text-left">
+                    <p class="text-sm text-white font-black italic">限量 96 支隊伍</p>
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-widest">Limited Slots Only</p>
+                </div>
+            </div>
+        </div>
 
-    function createOption(imgSrc, label, callback) {
-      const div = document.createElement('div');
-      div.className = 'option';
-      const img = document.createElement('img');
-      img.src = imgSrc;
-      img.className = 'option-img';
-      img.onerror = () => img.src = 'images/default.jpg';
-      img.onclick = callback;
-      const lbl = document.createElement('div');
-      lbl.className = 'label';
-      lbl.textContent = label;
-      div.appendChild(img);
-      div.appendChild(lbl);
-      return div;
-    }
+        <div class="absolute bottom-10 left-10 hidden lg:block animate__animated animate__fadeInLeft">
+            <div class="text-xs font-bold tracking-widest opacity-30 rotate-90 origin-left">SCROLL TO DISCOVER</div>
+        </div>
+    </header>
 
-    function showStep(stepId) {
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      document.getElementById(stepId).classList.add('active');
-    }
+    <!-- 賽制介紹 -->
+    <section id="about" class="py-32 bg-[#080808]">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
+            <div class="card-blur p-12 rounded-[2rem] neon-border group">
+                <div class="flex justify-between items-start mb-8">
+                    <h3 class="oswald text-4xl font-black italic uppercase">U18 <span class="text-leopard">High School</span></h3>
+                    <div class="w-12 h-12 bg-leopard/10 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-leopard" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-lg leading-relaxed mb-10">專為高中體系運動員打造，籃球、排球、足球校隊優先錄取。在全國級別的舞台，展現校園最強爆發力！</p>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <span class="text-6xl font-black oswald italic tracking-tighter">48</span>
+                        <span class="text-[10px] block text-gray-500 font-bold uppercase tracking-widest mt-2">報名隊伍數</span>
+                    </div>
+                    <span class="text-leopard font-black italic text-sm">#高中頂尖對決</span>
+                </div>
+            </div>
 
-    function init() {
-      const sportDiv = document.getElementById('sports');
-      Object.keys(data).forEach(sport => {
-        const opt = createOption(`images/${sport}.jpg`, sport, () => {
-          selections.sport = sport;
-          showItems(sport);
-        });
-        sportDiv.appendChild(opt);
-      });
-    }
+            <div class="card-blur p-12 rounded-[2rem] group">
+                <div class="flex justify-between items-start mb-8">
+                    <h3 class="oswald text-4xl font-black italic uppercase">Elite <span class="text-white">Open</span></h3>
+                    <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-lg leading-relaxed mb-10">大學系隊、專業社團、運動愛好者。這場比賽沒有舒適圈，只有不斷超越極限的勇者，定義最強健身模組。</p>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <span class="text-6xl font-black oswald italic tracking-tighter">48</span>
+                        <span class="text-[10px] block text-gray-500 font-bold uppercase tracking-widest mt-2">報名隊伍數</span>
+                    </div>
+                    <span class="text-white font-black italic text-sm opacity-60">#定義最強模組</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    function showItems(sport) {
-      const itemDiv = document.getElementById('items');
-      itemDiv.innerHTML = '';
-      Object.keys(data[sport].items).forEach(item => {
-        const opt = createOption(`images/${sport}/${item}.jpg`, item, () => {
-          selections.item = item;
-          showJerseyTypes(sport, item);
-        });
-        itemDiv.appendChild(opt);
-      });
-      showStep('step2');
-    }
-
-    function showJerseyTypes(sport, item) {
-      const typeDiv = document.getElementById('jerseyTypes');
-      typeDiv.innerHTML = '';
-      data[sport].items[item].forEach(type => {
-        const opt = createOption(`images/${sport}/${type}.jpg`, type, () => {
-          selections.jerseyType = type;
-          if (sport === '籃球') {
-            showShortsTypes(sport);
-          } else {
-            showStyles(sport, type);
-          }
-        });
-        typeDiv.appendChild(opt);
-      });
-      showStep('step3');
-    }
-
-    function showShortsTypes(sport) {
-      const shortsDiv = document.getElementById('shortsTypes');
-      shortsDiv.innerHTML = '';
-      data[sport].shorts.forEach(type => {
-        const opt = createOption(`images/${sport}/${type}.jpg`, type, () => {
-          selections.shortsType = type;
-          showStyles(sport, selections.jerseyType);
-        });
-        shortsDiv.appendChild(opt);
-      });
-      showStep('step4');
-    }
-
-    function showStyles(sport, jerseyType) {
-      const styleDiv = document.getElementById('styles');
-      styleDiv.innerHTML = '';
-      data[sport].styles[jerseyType].forEach(style => {
-        const opt = createOption(`images/${sport}/${style}.jpg`, style, () => {
-          selections.style = style;
-          showColors(sport, style);
-        });
-        styleDiv.appendChild(opt);
-      });
-      showStep('step5');
-    }
-
-    function showColors(sport, style) {
-      const colorDiv = document.getElementById('colors');
-      colorDiv.innerHTML = '';
-      (data[sport].colors[style] || []).forEach(color => {
-        const label = `${style}-${color}`;
-        const opt = createOption(`images/${sport}/${label}.jpg`, label, () => {
-          selections.color = label;
-          showStep('step7');
-        });
-        colorDiv.appendChild(opt);
-      });
-      showStep('step6');
-    }
-
-    function goToRagic() {
-      const base = "https://ap9.ragic.com/jersey/forms6/16";
-      const params = new URLSearchParams({
-        webview: "",
-        webaction: "form",
-        ver: "new",
-        version: "2",
-        pfv1001193: selections.sport,
-        pfv1000069: selections.item,
-        pfv1002088: selections.shortsType,
-        pfv1000071: selections.style,
-        pfv1001153: selections.color
-      });
-      window.open(`${base}?${params.toString()}`, '_blank');
-    }
-
-    init();
-</body>
-</html>
+    <!-- 模塊展示 -->
+    <section id="modules" class="py-32 px-6">
+        <div class="max-w-7xl mx-auto text-center mb-16">
+            <h2 class="text-6xl font-black oswald italic mb-6">THE 6+1 CHALLENGE</h2>
+            <div class="w-24 h-1 bg-leopard mx-auto mb-8"></div>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-12">這不是傳統健身賽，這是全方位的競技測試。我們針對運動員所需的各項素質，設計了六大核心模塊與最終心智挑戰。</p>
+            
+            <!-- 影片嵌入區域 -->
+            <div class="max-w-4xl mx-auto mb-20">
+                <div class="relative pt-[56.25%] rounded-[2rem] overflow-hidden shadow-2xl shadow-leopard/10 border border-white/5 bg-zinc-900 group">
+                    <iframe class="absolute inset-0 w-full h-full" 
+                            src="https://www.youtube.com/embed/ScMzIvxBSi4?autoplay=1&mute=1&loop=1&playlist=ScMzIvxBSi4" 
+                            title="Competition Module Preview" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen></iframe>
+                    
+                    <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-bold text-leopard tracking-widest opacity-0 group-hover:opacity-100 transition-opacity uppercase">
+                        Module Preview Video
+                    </div>
+                </div>
+                <p class="mt-6 text-sm text-gray-500 italic">查看競技健身挑戰賽 6+1 模塊示範影片</p>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div class="text-center p-8 card-blur rounded-2xl border-t-4 border-leopard">
+                <div class="text-leopard oswald text-3xl mb-4 italic font-black">M1</div>
+                <div class="font-black text-xl tracking-widest">敏捷</div>
+                <div class="text-[10px] text-gray-600 mt-2 font-bold uppercase">Agility</div>
+            </div>
+            <div class="text-center p-8 card-blur rounded-2xl border-t-4 border-leopard">
+                <div class="text-leopard oswald text-3xl mb-4 italic font-black">M2</
